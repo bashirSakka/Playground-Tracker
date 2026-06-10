@@ -1,0 +1,198 @@
+<!-- ════════════ PAGE 1 — MONITOR ════════════ -->
+<div id="page-monitor" class="page active" style="padding:0;gap:0;">
+
+  <!-- Alert banner -->
+  <div class="alert-banner safe" id="alertBanner">
+    <div class="banner-ico" id="bannerIco">✅</div>
+    <div class="banner-text">
+      <div class="banner-title" id="bannerTitle">All children are inside</div>
+      <div class="banner-sub" id="bannerSub">Zone monitoring active — no alerts</div>
+    </div>
+    <button class="btn-mute" id="muteBtn" onclick="toggleMute()" style="display:none">🔇 Mute</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Inside zone</div>
+      <div class="stat-val green" id="statIn">0</div>
+      <div class="stat-sub">children safe</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Outside zone</div>
+      <div class="stat-val red" id="statOut">0</div>
+      <div class="stat-sub">breaches</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tags active</div>
+      <div class="stat-val blue" id="statTags">0</div>
+      <div class="stat-sub">tracked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Anchors</div>
+      <div class="stat-val" id="statAnc">0/3</div>
+      <div class="stat-sub">A · B · D</div>
+    </div>
+  </div>
+
+  <!-- Content grid -->
+  <div class="content">
+
+    <!-- Map -->
+    <div class="map-wrap">
+      <div class="panel" style="flex:1;display:flex;flex-direction:column;">
+        <div class="panel-hdr">
+          <div class="panel-title">Playground map</div>
+          <div class="map-legend">
+            <div class="leg">
+              <div class="leg-dot" style="background:var(--safe)"></div>Inside
+            </div>
+            <div class="leg">
+              <div class="leg-dot" style="background:var(--danger)"></div>Outside
+            </div>
+            <div class="leg">
+              <div class="leg-dot" style="background:var(--info)"></div>Anchor
+            </div>
+          </div>
+        </div>
+        <svg class="map-svg" viewBox="0 0 320 270" id="mapSvg">
+          <!-- Grid pattern -->
+          <defs>
+            <pattern id="grid" width="26.6" height="22.5" patternUnits="userSpaceOnUse">
+              <path d="M26.6 0L0 0 0 22.5" fill="none" stroke="#e8e6df" stroke-width="0.5" />
+            </pattern>
+          </defs>
+          <rect width="320" height="270" fill="url(#grid)" />
+          <!-- Safe zone rectangle — maps 0-3m to ~53-266px x, 35-235px y -->
+          <rect id="safeZone" x="53" y="35" width="213" height="200" fill="#16a34a" fill-opacity="0.08" stroke="#16a34a"
+            stroke-width="1.5" stroke-dasharray="6,3" rx="3" />
+          <text x="159" y="140" text-anchor="middle" font-size="11" fill="#16a34a" opacity="0.4"
+            font-family="Outfit,sans-serif" font-weight="500" letter-spacing="2">SAFE ZONE</text>
+          <!-- Anchor A (0,3) → top-left (53, 35) -->
+          <circle cx="53" cy="35" r="15" fill="#2563eb" opacity="0.85" />
+          <text x="53" y="39" text-anchor="middle" font-size="11" font-weight="700" fill="white"
+            font-family="Outfit,sans-serif">A</text>
+          <text x="53" y="56" text-anchor="middle" font-size="9" fill="#2563eb" font-family="Outfit,sans-serif">Anchor
+            A</text>
+          <!-- Anchor B (3,0) → bottom-right (266, 235) -->
+          <circle cx="266" cy="235" r="15" fill="#2563eb" opacity="0.85" />
+          <text x="266" y="239" text-anchor="middle" font-size="11" font-weight="700" fill="white"
+            font-family="Outfit,sans-serif">B</text>
+          <text x="266" y="256" text-anchor="middle" font-size="9" fill="#2563eb" font-family="Outfit,sans-serif">Anchor
+            B</text>
+          <!-- Anchor D (0,0) → bottom-left (53, 235) -->
+          <circle cx="53" cy="235" r="15" fill="#2563eb" opacity="0.85" />
+          <text x="53" y="239" text-anchor="middle" font-size="11" font-weight="700" fill="white"
+            font-family="Outfit,sans-serif">D</text>
+          <text x="53" y="256" text-anchor="middle" font-size="9" fill="#2563eb" font-family="Outfit,sans-serif">Anchor
+            D</text>
+          <!-- Child markers — rendered by JS -->
+          <g id="childMarkers"></g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="right-col">
+
+      <!-- Active children -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title">Active children</div>
+        </div>
+        <div id="activeList">
+          <div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">
+            No children checked in
+          </div>
+        </div>
+      </div>
+
+      <!-- Anchor nodes -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title">Anchor nodes</div>
+        </div>
+        <div class="anc-grid">
+          <div class="anc-card" id="ancCard-A">
+            <div class="anc-id">A</div>
+            <div class="anc-coord">(0, 3)</div>
+            <div class="anc-dots" id="ancDots-A">
+              <div class="anc-dot off" id="adot-A-0"></div>
+              <div class="anc-dot off" id="adot-A-1"></div>
+              <div class="anc-dot off" id="adot-A-2"></div>
+            </div>
+          </div>
+          <div class="anc-card" id="ancCard-B">
+            <div class="anc-id">B</div>
+            <div class="anc-coord">(3, 0)</div>
+            <div class="anc-dots" id="ancDots-B">
+              <div class="anc-dot off" id="adot-B-0"></div>
+              <div class="anc-dot off" id="adot-B-1"></div>
+              <div class="anc-dot off" id="adot-B-2"></div>
+            </div>
+          </div>
+          <div class="anc-card" id="ancCard-D">
+            <div class="anc-id">D</div>
+            <div class="anc-coord">(0, 0)</div>
+            <div class="anc-dots" id="ancDots-D">
+              <div class="anc-dot off" id="adot-D-0"></div>
+              <div class="anc-dot off" id="adot-D-1"></div>
+              <div class="anc-dot off" id="adot-D-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tag status -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title">Tag status</div>
+        </div>
+        <div id="tagStatusList">
+          <div class="tag-row">
+            <div class="tag-dot off"></div>
+            <div class="tag-name">Tag_01</div>
+            <div class="tag-badge off">—</div>
+          </div>
+          <div class="tag-row">
+            <div class="tag-dot off"></div>
+            <div class="tag-name">Tag_02</div>
+            <div class="tag-badge off">—</div>
+          </div>
+          <div class="tag-row">
+            <div class="tag-dot off"></div>
+            <div class="tag-name">Tag_03</div>
+            <div class="tag-badge off">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check in -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title">Check in child</div>
+        </div>
+        <div class="ci-form">
+          <select id="ciChild">
+            <option value="">Select child...</option>
+          </select>
+          <div class="ci-row">
+            <select id="ciDuration">
+              <option value="1">1 min</option>
+              <option value="10">10 min</option>
+              <option value="15">15 min</option>
+              <option value="30" selected>30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">60 min</option>
+            </select>
+            <button class="btn-ci" onclick="doCheckin()">Check in ✓</button>
+          </div>
+          <button class="btn-ci btn-co" onclick="doCheckout()" id="checkoutBtn" style="display:none">
+            Check out selected
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

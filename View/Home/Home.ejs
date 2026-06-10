@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indoor Playground System</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="Home.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <%- include('partials/sidebar') %>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <div class="topbar">
+        <div class="page-title" id="pageTitle">Live Monitor</div>
+        <div class="clock" id="clock"></div>
+      </div>
+
+      <%- include('partials/page-monitor') %>
+      <%- include('partials/page-children') %>
+      <%- include('partials/page-add') %>
+
+    </div>
+  </div>
+
+  <%- include('partials/modal-detail') %>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="Home.js"></script>
+</body>
+
+</html>

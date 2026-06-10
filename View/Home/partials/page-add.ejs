@@ -1,0 +1,50 @@
+<!-- ════════════ PAGE 3 — ADD CHILD ════════════ -->
+<div id="page-add" class="page">
+  <form id="addChildForm" onsubmit="submitChild(event)">
+    <div class="form-section">
+      <div class="form-section-title">Child information</div>
+      <div class="form-grid">
+        <div class="field"><label for="f_name">Full name *</label><input type="text" id="f_name" name="name"
+            placeholder="e.g. Sara Ali" required /></div>
+        <div class="field"><label for="f_dob">Date of birth *</label><input type="date" id="f_dob" name="dob"
+            required /></div>
+        <div class="field"><label for="f_gender">Gender</label>
+          <select id="f_gender" name="gender">
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div class="field"><label for="f_notes">Notes (allergies, special needs)</label><input type="text" id="f_notes"
+            name="notes" placeholder="Optional" /></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Parent / guardian information</div>
+      <div class="form-grid">
+        <div class="field"><label for="f_father">Father's name</label><input type="text" id="f_father" name="father"
+            placeholder="e.g. Ahmad Ali" /></div>
+        <div class="field"><label for="f_mother">Mother's name</label><input type="text" id="f_mother" name="mother"
+            placeholder="e.g. Fatima Ali" /></div>
+        <div class="field"><label for="f_phone">Primary phone *</label><input type="tel" id="f_phone" name="phone"
+            placeholder="+961 XX XXX XXX" required /></div>
+        <div class="field"><label for="f_emergency">Emergency phone</label><input type="tel" id="f_emergency"
+            name="emergency" placeholder="Optional" /></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Avatar</div>
+      <div class="emoji-grid" id="formEmojiPicker"></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Assign BLE tag</div>
+      <div class="tag-selector" id="formTagSelector">
+        <div class="tag-loading-msg">Loading available tags...</div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-outline" onclick="resetForm()">Clear</button>
+      <button type="submit" class="btn btn-primary">Register child</button>
+    </div>
+  </form>
+</div>

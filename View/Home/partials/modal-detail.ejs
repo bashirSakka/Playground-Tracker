@@ -1,0 +1,76 @@
+<!-- ── CHILD DETAIL MODAL ── -->
+<div class="modal-overlay" id="detailOverlay">
+  <div class="detail-modal">
+    <div class="detail-header">
+      <div class="detail-avatar" id="detailAvatar">🧒</div>
+      <div>
+        <div class="detail-name" id="detailName">—</div>
+        <div class="detail-age" id="detailAge">—</div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-status-row">
+        <div class="status-pill off" id="detailStatus">
+          <div class="status-dot"></div>
+          <span id="detailStatusTxt">Not checked in</span>
+        </div>
+        <div class="zone-pill inside" id="detailZonePill" style="display:none">Inside zone</div>
+        <div class="card-tag-chip" id="detailTag" style="display:none">📡 <span id="detailTagTxt">—</span></div>
+      </div>
+      <div class="detail-timer-row" id="detailTimerRow" style="display:none">
+        <span class="detail-timer-label">Time remaining</span>
+        <span class="child-timer" id="detailTimerDisplay">—</span>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Child details</div>
+        <div class="detail-grid">
+          <div class="detail-field">
+            <div class="detail-field-label">Date of birth</div>
+            <div class="detail-field-value" id="detailDob">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Gender</div>
+            <div class="detail-field-value" id="detailGender">—</div>
+          </div>
+          <div class="detail-field" style="grid-column:1/-1">
+            <div class="detail-field-label">Notes</div>
+            <div class="detail-field-value" id="detailNotes">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Parent information</div>
+        <div class="detail-grid">
+          <div class="detail-field">
+            <div class="detail-field-label">Father</div>
+            <div class="detail-field-value" id="detailFather">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Mother</div>
+            <div class="detail-field-value" id="detailMother">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">📞 Primary phone</div>
+            <div class="detail-field-value" id="detailPhone">—</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">🚨 Emergency</div>
+            <div class="detail-field-value" id="detailEmergency">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Session history (today)</div>
+        <div class="session-list" id="detailSessions">
+          <div style="color:var(--text3);font-size:12px">No sessions today</div>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-primary" id="detailCheckinBtn" onclick="toggleCheckin()">Check in</button>
+        <button class="btn btn-danger" id="detailEraseBtn" onclick="eraseFromMap()" style="display:none">Erase from map</button>
+        <button class="btn btn-outline" onclick="closeDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

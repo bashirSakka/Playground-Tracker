@@ -1,0 +1,26 @@
+<!-- ── SIDEBAR ── -->
+<nav class="sidenav">
+  <div class="nav-brand">
+    <div class="brand-mark">IPS</div>
+    <div class="brand-name">Indoor Playground System</div>
+    <div class="brand-sub">v2.0 — Live Monitor</div>
+  </div>
+  <div class="nav-items">
+    <button class="nav-item active" onclick="goPage('monitor')" id="nav-monitor">
+      <span class="nav-icon">📡</span> Monitor
+      <span class="nav-badge" id="alertBadge">!</span>
+    </button>
+    <button class="nav-item" onclick="goPage('children')" id="nav-children">
+      <span class="nav-icon">🧒</span> Children
+    </button>
+    <button class="nav-item" onclick="goPage('add')" id="nav-add">
+      <span class="nav-icon">➕</span> Add Child
+    </button>
+  </div>
+  <div class="nav-footer">
+    <div class="ws-status">
+      <div class="ws-led" id="wsLed"></div>
+      <span id="wsText">Connecting...</span>
+    </div>
+  </div>
+</nav>

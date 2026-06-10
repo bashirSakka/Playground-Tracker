@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground Tracker – Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Login.css">
+</head>
+
+<body>
+
+    <div class="pg-card">
+        <div class="pg-top-stripe"></div>
+
+        <div class="pg-floaties" aria-hidden="true">
+            <span class="pg-floatie">⚽</span>
+            <span class="pg-floatie">🏃</span>
+            <span class="pg-floatie">🎯</span>
+        </div>
+
+        <div class="pg-header">
+            <div class="pg-badge">⭐ Playground Tracker</div>
+            <h1 class="pg-title">Admin <span>Dashboard</span></h1>
+            <p class="pg-sub">Sign in to track activities, points, and daily progress at the playground.</p>
+        </div>
+
+        <form method="POST" action="/login">
+
+            <div class="pg-field">
+                <label for="uname">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#4a5568" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                    </svg>
+                    Username
+                </label>
+                <input id="uname" type="text" name="uname" placeholder="Enter your username" required />
+            </div>
+
+            <div class="pg-field">
+                <label for="pass">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#4a5568" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Password
+                </label>
+                <input id="pass" type="password" name="pass" placeholder="Enter your password" required />
+            </div>
+
+            <div class="pg-options">
+                <label class="pg-remember">
+                    <input type="checkbox" id="showPass"
+                        onchange="document.getElementById('pass').type = this.checked ? 'text' : 'password'" />
+                    Show password
+                </label>
+            </div>
+
+            <button type="submit" class="pg-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Sign In & Play
+            </button>
+
+        </form>
+
+        <div class="pg-divider"><span>are you a parent?</span></div>
+
+        <a href="../Parent-Login/parent-login.html" class="pg-parent-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Parent Login
+        </a>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<!-- ════════════ PAGE 2 — CHILDREN ════════════ -->
+<div id="page-children" class="page">
+  <div class="page-hdr">
+    <div class="search-bar">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search by name, tag, or parent..."
+        oninput="filterChildren()" />
+    </div>
+    <button class="btn btn-primary" onclick="goPage('add')">+ Add Child</button>
+  </div>
+  <div class="children-grid" id="childrenGrid">
+    <div class="empty-state">
+      <div class="empty-icon">🧒</div>
+      <p>No children registered yet.<br />Press <strong>Add Child</strong> to get started.</p>
+    </div>
+  </div>
+</div>
