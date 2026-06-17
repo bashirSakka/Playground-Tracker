@@ -1,0 +1,20 @@
+module.exports = {
+  X_MIN: 0,
+  X_MAX: 3,
+  Y_MIN: 0,
+  Y_MAX: 3,
+  BOUNDARY_MARGIN: 0.3,
+  VOTES_TO_ALERT: 5,
+  VOTES_TO_CLEAR: 3,
+  PATH_LOSS_N: 2.7,
+  RSSI_AVERAGE_WINDOW: 10,
+  POSITION_WINDOW: 5,
+  OFFLINE_TIMEOUT: 10000,
+  anchorConfig: {
+    A: { x: 0, y: 3, txPower: -74 },
+    B: { x: 3, y: 0, txPower: -74 },
+    D: { x: 0, y: 0, txPower: -74 },
+  },
+  TRILAT_ANCHORS: ["A", "B", "D"],
+  TRACKED_TAGS: ["ChildTag_01", "ChildTag_02", "ChildTag_03"],
+};
