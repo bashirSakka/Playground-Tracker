@@ -1,4 +1,5 @@
 const WebSocket = require("ws");
+const axios = require("axios");
 const db = require("../DB/connection");
 const {
   X_MIN, X_MAX, Y_MIN, Y_MAX,
@@ -9,6 +10,20 @@ const {
 const { anchorData, tagState, activeSessions } = require("./state");
 
 let browserClients = [];
+
+async function sendTelegramAlert(message) {
+  const token  = process.env.TELEGRAM_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+  try {
+    await axios.get(`https://api.telegram.org/bot${token}/sendMessage`, {
+      params: { chat_id: chatId, text: message },
+    });
+    console.log("[Telegram]", message);
+  } catch (err) {
+    console.error("[Telegram] send failed:", err.message);
+  }
+}
 
 function broadcast(data) {
   browserClients.forEach((c) => {
@@ -51,6 +66,7 @@ function init(server) {
             .catch((err) => console.error("[autoCheckout] DB error:", err.message));
         }
         broadcast({ type: "autoCheckout", tagID, childName });
+        sendTelegramAlert(`⏰ ${childName}'s play time has ended and they have been checked out automatically.`);
       } else {
         broadcast({ type: "timerTick", tagID, childName: s.childName, allowedMinutes: s.allowedMs / 60000, remainingMs, checkInTime: s.startTime });
       }
@@ -166,9 +182,7 @@ function checkBoundary(tagID, pos) {
     broadcast({ type: "alert", status: "INSIDE", tagID, position: pos, lastSeen: zoneStatus.lastSeen, zoneStatus });
   }
 
-  if (inside) {
-    zoneStatus.lastSeen = { x: pos.x, y: pos.y, timestamp: new Date().toISOString() };
-  }
+  zoneStatus.lastSeen = { x: pos.x, y: pos.y, timestamp: new Date().toISOString() };
   zoneStatus.position = { x: pos.x, y: pos.y };
 }
 

@@ -53,6 +53,30 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+function fmtRelative(isoStr) {
+  const diff = Date.now() - new Date(isoStr).getTime();
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return `${s}s ago`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  return new Date(isoStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+function describePosition(x, y) {
+  if (x === null || y === null) return null;
+  const NEAR = 0.7;
+  const dA = Math.hypot(x - 0, y - 3);
+  const dB = Math.hypot(x - 3, y - 0);
+  const dD = Math.hypot(x - 0, y - 0);
+  if (dA < NEAR) return "Near anchor A";
+  if (dB < NEAR) return "Near anchor B";
+  if (dD < NEAR) return "Near anchor D";
+  const sorted = [{ n: "A", d: dA }, { n: "B", d: dB }, { n: "D", d: dD }]
+    .sort((a, b) => a.d - b.d);
+  if (sorted[1].d - sorted[0].d < 0.8) return `Between ${sorted[0].n} and ${sorted[1].n}`;
+  return `Near ${sorted[0].n} side`;
+}
+
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
 function goPage(name) {
   document
@@ -272,11 +296,17 @@ function renderActiveList() {
       const clickAttr = child
         ? `onclick="openDetail(${child.id})" style="cursor:pointer"`
         : "";
+      const ls = zone?.lastSeen;
+      const posLabel = ls ? describePosition(ls.x, ls.y) : null;
+      const lastSeenHTML = ls?.timestamp
+        ? `<div class="last-seen-txt">Last seen ${fmtRelative(ls.timestamp)}${posLabel ? ` · ${posLabel}` : ""}</div>`
+        : "";
       return `<div class="child-row" ${clickAttr}>
       <div class="child-avatar">${info.emoji || "🧒"}</div>
       <div class="child-info">
         <div class="child-name">${info.childName}</div>
         ${timerHTML}
+        ${lastSeenHTML}
       </div>
       <div class="zone-badge ${inside ? "in" : "out"}" id="zbadge-${tagID}">${inside ? "In" : "Out"}</div>
     </div>`;
@@ -478,16 +508,20 @@ function stopBeep() {
 function beepOnce() {
   if (!beeping || muted) return;
   if (!audioCtx) audioCtx = new AudioContext();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.value = 880;
-  gain.gain.value = 0.15;
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.4);
-  setTimeout(beepOnce, 2000);
+  const play = () => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "square";
+    osc.frequency.value = 880;
+    gain.gain.value = 0.15;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+    setTimeout(beepOnce, 2000);
+  };
+  if (audioCtx.state === "suspended") audioCtx.resume().then(play);
+  else play();
 }
 function toggleMute() {
   muted = !muted;
@@ -574,12 +608,10 @@ function populateCheckinDropdown() {
   sel.innerHTML =
     `<option value="">Select child...</option>` +
     allChildren
+      .filter((c) => c.tag_id)
       .map((c) => {
-        const tag = c.tag_id || "";
-        const label = tag
-          ? `${c.full_name} — ${tag.replace("ChildTag_", "Tag ")}`
-          : `${c.full_name} — (no tag)`;
-        return `<option value="${c.id}|${tag}" ${!tag ? "disabled" : ""}>${label}</option>`;
+        const label = `${c.full_name} — ${c.tag_id.replace("ChildTag_", "Tag ")}`;
+        return `<option value="${c.id}|${c.tag_id}">${label}</option>`;
       })
       .join("");
 }
@@ -600,7 +632,7 @@ function renderChildrenGrid(list) {
       <div class="card-avatar">${c.emoji || "🧒"}</div>
       <div class="card-name">${c.full_name}</div>
       <div class="card-age">${age} · ${c.gender || "—"}</div>
-      ${c.tag_id ? `<div class="card-tag">📡 ${c.tag_id.replace("ChildTag_", "Tag ")}</div>` : ""}
+      ${c.tag_id ? `<div class="card-tag">📡 ${String(c.tag_id).replace("ChildTag_", "Tag ")}</div>` : ""}
       <div class="card-actions">
         <button class="card-btn edit-btn" onclick="event.stopPropagation(); editChild(${c.id})">Edit</button>
         <button class="card-btn delete-btn" onclick="event.stopPropagation(); deleteChild(${c.id}, '${c.full_name}')">Delete</button>
@@ -686,7 +718,7 @@ async function openDetail(id) {
   const tagTxt = document.getElementById("detailTagTxt");
   if (c.tag_id) {
     tagEl.style.display = "inline-block";
-    tagTxt.textContent = c.tag_id.replace("ChildTag_", "Tag ");
+    tagTxt.textContent = String(c.tag_id).replace("ChildTag_", "Tag ");
   } else {
     tagEl.style.display = "none";
   }
@@ -713,6 +745,19 @@ async function openDetail(id) {
     zonePill.textContent = inside ? "Inside zone" : "Outside zone";
   } else {
     zonePill.style.display = "none";
+  }
+
+  const lsRow = document.getElementById("detailLastSeen");
+  const ls = tagID && tagState[tagID]?.zoneStatus?.lastSeen;
+  if (ls?.timestamp) {
+    lsRow.style.display = "block";
+    const posLabel = describePosition(ls.x, ls.y);
+    document.getElementById("detailLastSeenTxt").textContent =
+      new Date(ls.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) +
+      " (" + fmtRelative(ls.timestamp) + ")" +
+      (posLabel ? ` · ${posLabel}` : "");
+  } else {
+    lsRow.style.display = "none";
   }
 
   document.getElementById("detailCheckinBtn").textContent = isIn
@@ -936,6 +981,11 @@ function showToast(msg) {
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener("click", () => {
+  if (!audioCtx) audioCtx = new AudioContext();
+  else if (audioCtx.state === "suspended") audioCtx.resume();
+}, { once: true });
+
 initWS();
 initForm();
 loadChildren();

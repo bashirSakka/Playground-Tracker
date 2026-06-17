@@ -47,7 +47,12 @@ router.post("/anchor-data", (req, res) => {
     const smoothY = state.positionBuffer.reduce((a, b) => a + b.y, 0) / state.positionBuffer.length;
     state.position = { x: parseFloat(smoothX.toFixed(3)), y: parseFloat(smoothY.toFixed(3)) };
     console.log(`  [trilat][${tagID}] Raw:(${pos.x},${pos.y}) Smooth:(${state.position.x},${state.position.y})`);
-    checkBoundary(tagID, state.position);
+    if (activeSessions[tagID]) {
+      checkBoundary(tagID, state.position);
+    } else {
+      state.alertVotes = 0;
+      state.clearVotes = 0;
+    }
   }
 
   broadcast({
